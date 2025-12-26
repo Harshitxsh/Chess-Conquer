@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessConquer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>ChessConquer</h1>
+        </header>
+
+        <!-- Setup Modal -->
+        <div id="setup-modal" class="modal-overlay">
+            <div class="glass-panel modal-content">
+                <h2>Game Setup</h2>
+
+                <div class="setup-group">
+                    <label>Choose Your Color</label>
+                    <div class="toggle-group color-choice">
+                        <button data-color="w" class="active">White</button>
+                        <button data-color="b">Black</button>
+                    </div>
+                </div>
+
+                <div class="setup-group">
+                    <label>Who Moves Next/First?</label>
+                    <div class="toggle-group starter-choice">
+                        <button data-starter="user" class="active">User</button>
+                        <button data-starter="computer">Computer</button>
+                    </div>
+                </div>
+
+                <button id="start-game-btn" class="primary-btn">Start Game</button>
+            </div>
+        </div>
+
+        <main class="main-layout">
+            <div class="board-container glass-panel">
+                <div id="board"></div>
+            </div>
+
+            <aside class="analysis-panel glass-panel">
+                <div class="eval-bar-wrapper">
+                    <div class="eval-header">
+                        <span>Evaluation</span>
+                        <span id="eval-score">0.00</span>
+                    </div>
+                    <div class="eval-bar-container">
+                        <div id="eval-bar" class="eval-bar"></div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="new-game-trigger" class="primary-btn" style="width:100%; margin-bottom:15px;">New Game
+                        Setup</button>
+
+                    <textarea id="pgn-input" placeholder="Paste PGN here to import game details..."></textarea>
+                    <div class="button-group">
+                        <button id="load-btn">Load PGN</button>
+                        <button id="reset-btn">Reset Board</button>
+                    </div>
+                </div>
+
+                <div class="move-history custom-scrollbar">
+                    <div class="moves-header">Move History</div>
+                    <div id="move-history" class="moves-list">
+                        <!-- Moves will be populated here -->
+                    </div>
+                </div>
+
+                <div class="status-bar">
+                    <div class="status-indicator"></div>
+                    <div id="status">White to move</div>
+                </div>
+            </aside>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 All rights reserved</p>
+            <p>Made by: <strong><a href="https://www.linkedin.com/in/harshit-sharma-b700b2353/" target="_blank"
+                        class="author-link">Harshit Sharma</a></strong></p>
+        </footer>
+    </div>
+
+    <script src="lib/stockfish.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
