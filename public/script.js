@@ -7,49 +7,8 @@ var $pgn = $('#pgn');
 
 var playerColor = 'w'; // 'w' or 'b'
 
-function onDragStart(source, piece, position, orientation) {
-    // do not pick up pieces if the game is over
-    if (game.game_over()) return false;
+// Drag functions removed for Click-to-Move Interaction
 
-    // Only pick up pieces for the player's color, and only if it's their turn
-    // piece.search(/^w/) returns 0 if white piece.
-    // if playerColor is 'w', we want piece starting with 'w'
-    // if playerColor is 'b', we want piece starting with 'b'
-
-    // Check turn
-    if (game.turn() !== playerColor) return false;
-
-    // Check piece color vs player color
-    if ((playerColor === 'w' && piece.search(/^w/) === -1) ||
-        (playerColor === 'b' && piece.search(/^b/) === -1)) {
-        return false;
-    }
-}
-
-function onDrop(source, target) {
-    // see if the move is legal
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q'
-    });
-
-    // illegal move
-    if (move === null) return 'snapback';
-
-    updateStatus();
-
-    // Player moved. Now trigger computer.
-    if (!game.game_over()) {
-        window.setTimeout(makeComputerMove, 250);
-    }
-}
-
-// update the board position after the piece snap
-// for castling, en passant, pawn promotion
-function onSnapEnd() {
-    board.position(game.fen());
-}
 
 function updateStatus() {
     var status = '';
@@ -206,12 +165,85 @@ function updateEvalUI(scoreCp) {
     evalBar.style.width = wpp + '%';
 }
 
+// --- Click-to-Move Logic ---
+var selectedSquare = null;
+
+// Handle Click
+$('#board').on('click', '.square-55d63', function () {
+    // Blocking if game over
+    if (game.game_over()) return;
+
+    // STRICTLY check if it is player's turn to move.
+    // We do NOT want to select pieces if it's the computer's turn to think.
+    if (game.turn() !== playerColor) return;
+
+    var square = $(this).data('square');
+    var piece = game.get(square);
+
+    // Case 1: Clicked on a piece that belongs to the player (Selection)
+    if (piece && piece.color === playerColor) {
+        // Safe re-select
+        removeHighlights();
+        selectedSquare = square;
+        highlightSquare(square, 'highlight-selected');
+
+        // Highlight legal moves
+        var moves = game.moves({
+            square: square,
+            verbose: true
+        });
+
+        for (var i = 0; i < moves.length; i++) {
+            var targetClass = 'highlight-move';
+            // Check if capture for different styling
+            if (game.get(moves[i].to)) {
+                targetClass += ' capture-hint';
+            }
+            highlightSquare(moves[i].to, targetClass);
+        }
+        return;
+    }
+
+    // Case 2: Clicked on an empty square or enemy piece (Attempt Move)
+    if (selectedSquare) {
+        // Try to move
+        var move = game.move({
+            from: selectedSquare,
+            to: square,
+            promotion: 'q' // NOTE: always promote to a queen
+        });
+
+        // If illegal move, `move` is null
+        if (move === null) {
+            // Clicked invalid square, just clear selection
+            removeHighlights();
+            selectedSquare = null;
+        } else {
+            // Legal move!
+            removeHighlights();
+            selectedSquare = null;
+
+            board.position(game.fen());
+            updateStatus();
+
+            // Trigger computer response
+            window.setTimeout(makeComputerMove, 250);
+        }
+    }
+});
+
+function removeHighlights() {
+    $('#board .square-55d63').removeClass('highlight-selected highlight-move capture-hint');
+}
+
+function highlightSquare(square, className) {
+    $('#board .square-' + square).addClass(className);
+}
+
 var config = {
-    draggable: true,
+    draggable: false, // Drag disabled
     position: 'start',
-    onDragStart: onDragStart,
-    onDrop: onDrop,
-    onSnapEnd: onSnapEnd,
+    // No drag handlers needed
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
 }
 board = Chessboard('board', config);
