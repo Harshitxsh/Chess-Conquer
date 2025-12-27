@@ -76,10 +76,11 @@ If you want to run this project locally:
 
 ## 👨‍💻 Credits
 
-* **Developer**: [Harshit Sharma](https://www.linkedin.com/in/harshit-sharma-b700b2353/) | [LinkedIn Profile](https://www.linkedin.com/in/harshit-sharma-b700b2353/)
+* **Developer**: [Harshit Sharma] | [LinkedIn Profile](https://www.linkedin.com/in/harshit-sharma-b700b2353/)
 * **Libraries**:
   * *Chess.js* (Logic)
   * *Chessboard.js* (Visualization)
   * *Stockfish.js* (Engine)
 
 &copy; 2025 All rights reserved.
+
