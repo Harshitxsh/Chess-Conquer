@@ -46,6 +46,20 @@
             </div>
         </div>
 
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal-overlay">
+            <div class="glass-panel modal-content">
+                <h2 id="game-over-title">Game Over</h2>
+                <p id="game-over-reason" style="margin-bottom: 20px; color: var(--text-primary);">Checkmate!</p>
+
+                <div class="button-group" style="flex-direction: column; gap: 10px;">
+                    <button id="modal-new-game" class="primary-btn">Start New Game</button>
+                    <button id="modal-undo" class="primary-btn"
+                        style="background: var(--text-secondary); opacity: 0.8;">Undo Last Move</button>
+                </div>
+            </div>
+        </div>
+
         <main class="main-layout">
             <div class="board-container glass-panel">
                 <div id="board"></div>
@@ -63,7 +77,8 @@
                 </div>
 
                 <div class="controls">
-                    <button id="new-game-trigger" class="primary-btn" style="width:100%; margin-bottom:15px;">New Game
+                    <button id="new-game-trigger" class="primary-btn" style="width:100%; margin-bottom:15px;">New
+                        Game
                         Setup</button>
 
                     <textarea id="pgn-input" placeholder="Paste PGN here to import game details..."></textarea>
