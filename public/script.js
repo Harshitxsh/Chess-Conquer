@@ -39,27 +39,65 @@ function updateStatus() {
     }
 
     // update status
-    console.log(status);
     $status.html(status);
     $fen.html(game.fen());
     $pgn.html(game.pgn());
 
     updateMoveHistory();
 
+    // Show Game Over Modal if needed
+    if (game.game_over()) {
+        showGameOverModal(status);
+        return;
+    }
+
     // Run Stockfish analysis
-    // Only analyze if NOT start position, or force 0.00 for start?
-    // User requested "start with 0.0".
     if (game.history().length === 0) {
         evalScore.innerText = '0.00';
         evalBar.style.width = '50%';
-        // We can still run analysis in background but maybe don't update UI if it's startpos?
-        // Or just analyze. The user said "random values when its the begening". 
-        // Likely they mean they want to see 0.0 initially.
-        // Let's NOT analyze on empty history to keep it 0.0 static until a move is made
         return;
     }
     analyzePosition();
 }
+
+// Game Over Modal Logic
+var $gameOverModal = $('#game-over-modal');
+
+function showGameOverModal(message) {
+    // Extract reason
+    var title = "Game Over";
+    var reason = message;
+
+    if (game.in_checkmate()) {
+        title = "Checkmate!";
+        reason = (game.turn() === 'w' ? "Black" : "White") + " wins!";
+    } else if (game.in_draw()) {
+        title = "Draw";
+        reason = "Game drawn by repetition or insufficient material.";
+    }
+
+    $('#game-over-title').text(title);
+    $('#game-over-reason').text(reason);
+    $gameOverModal.addClass('active');
+}
+
+$('#modal-new-game').on('click', function () {
+    $gameOverModal.removeClass('active');
+    $modal.addClass('active'); // Open Setup Modal
+});
+
+$('#modal-undo').on('click', function () {
+    // Undo 2 moves (Computer + User) to get back to user turn
+    game.undo(); // Computer's move
+    game.undo(); // User's move
+
+    board.position(game.fen());
+    updateStatus();
+    $gameOverModal.removeClass('active');
+
+    // Resume analysis if needed, but wait for user input
+    stockfish.postMessage('stop');
+});
 
 function updateMoveHistory() {
     var history = game.history({ verbose: true });
