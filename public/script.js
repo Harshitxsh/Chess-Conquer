@@ -132,6 +132,13 @@ stockfish.onmessage = function (event) {
 
     // Parse "info depth X score cp Y"
     if (line.startsWith('info') && line.includes('score cp')) {
+        // Extract depth
+        var depthMatch = line.match(/depth (\d+)/);
+        var depth = depthMatch ? parseInt(depthMatch[1]) : 0;
+
+        // Stabilize: Only update UI if depth is sufficient > 10
+        if (depth < 10) return;
+
         var match = line.match(/score cp (-?\d+)/);
         if (match) {
             var score = parseInt(match[1]);
@@ -179,8 +186,9 @@ stockfish.onmessage = function (event) {
 function analyzePosition() {
     // Just analysis
     var fen = game.fen();
+    // Increased depth for better accuracy
     stockfish.postMessage('position fen ' + fen);
-    stockfish.postMessage('go depth 15');
+    stockfish.postMessage('go depth 20');
 }
 
 function makeComputerMove() {
