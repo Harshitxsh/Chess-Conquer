@@ -76,7 +76,7 @@ If you want to run this project locally:
 
 ## 👨‍💻 Credits
 
-* **Developer**: [Harshit Sharma] | [LinkedIn Profile](https://www.linkedin.com/in/harshit-sharma-b700b2353/)
+* **Developer**: Harshit Sharma | [LinkedIn Profile](https://www.linkedin.com/in/harshit-sharma-b700b2353/)
 * **Libraries**:
   * *Chess.js* (Logic)
   * *Chessboard.js* (Visualization)
